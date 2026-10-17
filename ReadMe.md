@@ -21,7 +21,6 @@ On ne « lance » donc pas Lean comme une application : on écrit un fichier `.l
 | `scripts/install_lean.sh`                               | installation complète depuis zéro (elan, Lean, projet Mathlib, cache)                     |
 | `scripts/installer_icone_lean.sh`                       | crée l'icône « Lean 4 » et son menu de travail                                            |
 | `sync.sh`                                               | synchronise le dépôt avec GitHub (add, commit, push)                                      |
-| `.github/`                                              | workflow d'intégration continue généré par `lake new`                                     |
 
 Le dossier `.lake/` (Mathlib et ses fichiers compilés, plusieurs Go) n'est **pas** versionné : il se reconstruit avec `lake exe cache get`.
 
