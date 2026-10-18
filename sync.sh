@@ -20,13 +20,31 @@ fi
 
 git add -A
 
-if git diff --cached --quiet; then
-    echo "Rien de nouveau à valider."
-else
+# Modifications à valider ?
+CHANGED=0
+if ! git diff --cached --quiet; then
     git commit -m "$MSG"
+    CHANGED=1
 fi
 
-BRANCHE="$(git rev-parse --abbrev-ref HEAD)"
-git push -u origin "$BRANCHE"
+# Commits à envoyer ? (sans branche suivie : premier envoi)
+if git rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' >/dev/null 2>&1; then
+    HAS_UPSTREAM=1
+    AHEAD="$(git rev-list --count '@{upstream}..HEAD')"
+else
+    HAS_UPSTREAM=0
+    AHEAD=1
+fi
 
-echo "Synchronisation terminée."
+if [ "$CHANGED" -eq 0 ] && [ "$AHEAD" -eq 0 ]; then
+    echo "Aucune modification"
+    exit 0
+fi
+
+if [ "$HAS_UPSTREAM" -eq 1 ]; then
+    git push
+else
+    git push -u origin "$(git rev-parse --abbrev-ref HEAD)"
+fi
+
+echo "✅ Synchronisation Ok"
